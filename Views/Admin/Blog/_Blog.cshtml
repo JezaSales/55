@@ -1,0 +1,16 @@
+﻿@model IEnumerable<RoundpayFinTech.AppCode.Model.ProcModel.Blog>
+
+@if (Model != null && Model.Any())
+{
+    int i = 0;
+    foreach (var item in Model)
+    {
+        i++;
+<tr data-item-id="@item.ID">
+    <td>@i</td>
+    <td>@item.Tittle</td>
+    <td>@Html.Raw(@item.ContentDetails)</td>
+    <td>@item.CreateDate</td>
+</tr>
+    }
+}

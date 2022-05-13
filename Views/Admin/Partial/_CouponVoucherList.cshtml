@@ -1,0 +1,117 @@
+﻿@model RoundpayFinTech.AppCode.Model.CoupanVoucherRes
+@{
+    int counter = 0;
+}
+<div class="row mt-2">
+    <div class="col-sm-4 mb-1" style="line-height:35px">
+        <label class="lbl">Total Available Amount: @Model.TotalACoupn</label>
+    </div>
+    <div class="col-sm-4 mb-1">
+        @{ 
+            var masterList = new SelectList(Model.CoupanMaster, "ID", "OpName");
+        }
+        <select class="form-control" asp-items="masterList" id="ddlMasterVoucher" asp-for="@Model.MasterVId"></select>
+    </div>
+    <div class="col-sm-4 mb-1">
+        <input type="text" class="form-control" id="txtSearch" placeholder="search coupon" />
+    </div>
+</div>
+<table id="tblsendeno" class="table table-bordered table-striped table-responsive-sm">
+    <thead class="bg-tableth">
+        <tr>
+            <th>#</th>
+            <th>Api Name</th>
+            <th>Coupon Code</th>
+            <th>Amount</th>
+            <th>IsSale</th>
+            <th>Action</th>
+            <th>Add Date</th>
+            <th>Sell Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var mdl in Model.CoupanVoucher)
+        {
+            <tr data-item-id="@mdl.ID">
+                <th scope="row">@(counter + 1)</th>
+                <td>@mdl.ApiName</td>
+                <td>@mdl.CouponCode</td>
+                <td>@mdl.Amount</td>
+                <td>@mdl.IsSale</td>
+                <td hidden>@mdl.APIID</td>
+                <td hidden>@mdl.VoucherID</td>
+                <td>@mdl.EntryDate</td>
+                <td>@Html.Raw(mdl.IsSale ? mdl.ModifyDate : string.Empty)</td>
+                <td>
+                    @if (@mdl.IsSale == false)
+                    {
+                        <div class="btn-group">
+                            <button class="btn btn-info btn-sm btnEditCard" title="Edit"><i class="fa fa-edit"></i></button>
+                            <button onclick="delCoupon(@mdl.ID)" class="btn btn-danger btn-sm" title="Delete"><i class="fa fa-trash-alt"></i></button>
+                        </div>
+                    }
+                </td>
+            </tr>
+            counter++;
+        }
+    </tbody>
+</table>
+<script>
+    $("#txtSearch").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $('#__p table tbody tr').filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+    $('.btnEditCard').click(function () {
+        let currentRow = $(this).closest('tr');
+        let currentTd = currentRow.find("td");
+        $("#txtCouponCode").val(currentTd.eq(1).text().trim());
+        $("#_Amt").val(currentTd.eq(2).text().trim());
+        $("#ddlApi").val(currentTd.eq(4).text().trim());
+        $("#tblID").val(currentRow.data().itemId);
+        $("#btnSaveCard").text("Update");
+    });
+    var delCoupon = function (id) {
+        let dprt = { ID: id };
+        $.ajax({
+            type: 'POST',
+            url: '/CouponVoucher-Del',
+            data: JSON.stringify(dprt),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (result) {
+                an.title = result.statuscode == an.type.success ? 'Success' : 'Oops';
+                an.content = result.msg;
+                an.alert(result.statuscode);
+                CouponVoucher1(@Html.Raw(Model.CoupanVoucher.FirstOrDefault()?.VoucherID ?? 0));
+            },
+            statusCode: {
+                500: function () {
+                    an.title = 'Oops';
+                    an.content = 'Server error';
+                    an.alert(an.type.failed);
+                },
+                0: function () {
+                    an.title = 'Oops';
+                    an.content = 'Internet Connection was broken';
+                    an.alert(an.type.failed);
+                }
+            },
+            error: function (xhr, result, msg) {
+                an.title = "Oops";
+                an.content = msg;
+                an.alert(an.type.failed);
+                preloader.remove();
+            },
+            complete: function () {
+                preloader.remove();
+            }
+        });
+    };
+    $('#ddlMasterVoucher').change(e => {
+        let masterVId = $(e.currentTarget).val();
+        loadData(masterVId);
+        loadStock(masterVId);
+    });
+</script>

@@ -1,0 +1,149 @@
+﻿@{
+    ViewData["Title"] = "Blog";
+
+}
+
+
+<div aria-label="breadcrumb" class="breadcrumb" id="page-header">
+    <div class="container-fluid">
+        <h5 class="float-left"><i class="fa fa-users"></i> @ViewData["Title"]</h5>
+        <ol class="breadcrumb float-right">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+            <li class="breadcrumb-item">Setting</li>
+            <li class="breadcrumb-item active">Blogs</li>
+        </ol>
+    </div>
+</div>
+<div class="__p  main-temp-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mt-2">
+                    <div class="card-header bg-gradientorange text-white">
+                        <div class="row text-monospace">
+                            <div class="col-sm-10 line-height-34">
+                                <i class="fas fa-link"></i> Blogs List
+                            </div>
+                            <div class="col-sm-2 text-right">
+                                <span id="btnNew" class="btn btn-outline-light btn-sm pl-4 pr-4">
+                                    New
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead class="bg-tableth">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Blogs</th>
+                                        <th scope="col">CreateDate</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-1b93190375e9ccc259df3a57c1abc0e64599724ae30d7ea4c6877eb615f89387.js"></script>
+
+<script src='https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/4/tinymce.min.js'></script>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script id="rendered-js">
+    tinymce.init({
+        selector: 'textarea',
+        height: 500,
+        plugins: [
+            "advlist autolink lists link image charmap print preview anchor",
+            "searchreplace visualblocks code fullscreen",
+            "insertdatetime media table contextmenu paste imagetools wordcount"],
+
+        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+        // imagetools_cors_hosts: ['www.tinymce.com', 'codepen.io'],
+        content_css: [
+            '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+            '//www.tinymce.com/css/codepen.min.css']
+    });
+    //# sourceURL=pen.js
+</script>
+
+@*<script src="~/lib/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="~/lib/TinyMCE/tinymce.min.js?a=1"></script>*@
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            loadBlogs();
+        });
+        var loadBlogs = function () {
+            preloader.load();
+            $.post('/_Blog')
+                .done(result => $('tbody').html(result))
+                .fail(xhr => {
+                    an.id = 'alertModal';
+                    an.title = 'Oops';
+                    an.content = xhr.status === 0 ? 'Internet Connection was broken' : 'Server error';
+                    an.alert(an.type.failed);
+                }).always(() => preloader.remove());
+        };
+
+
+        (() => {
+            darkAnimBtn($('#btnNew'));
+            // preloader.load();
+            an.autoClose = 5;
+            $('#btnNew').click(() => _edit(0));
+
+        })();
+
+        var _edit = id => {
+            preloader.load();
+            $.post('/BlogsAddNew/', { id: id })
+                .done(result => {
+                    resultReload(result);
+                    mdlA.id = 'mymodel2';
+                    mdlA.content = result;
+                    mdlA.options.backdrop = 'static';
+                    mdlA.alert(mdlA.size.large);
+                    _bindEditor();
+                    $('button.close span,#mdlCancel').click(() => window.location.href = window.location.href);
+                })
+                .fail(xhr => {
+                    an.title = 'Oops';
+                    an.content = xhr.status == 0 ? 'Internet Connection was broken' : 'Server error';
+                    an.alert(an.type.failed);
+                }).always(() => preloader.remove());
+
+        }
+
+        var _bindEditor = () => {
+            tinymce.init({
+                selector: '.txtBlogsDetail',//'textarea',
+                height: 100,
+                theme: 'modern',
+                plugins: ['autolink link', 'save',
+                    'emoticons paste textcolor colorpicker textpattern imagetools'
+                ],
+                toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link image',
+                toolbar2: 'forecolor backcolor emoticons',
+                image_advtab: true,
+                templates: [
+                    { title: 'Test template 1', content: 'Test 1' },
+                    { title: 'Test template 2', content: 'Test 2' }
+                ],
+                content_css: ['//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                    '//www.tinymce.com/css/codepen.min.css'
+                ]
+            });
+        }
+
+
+    </script>
+}

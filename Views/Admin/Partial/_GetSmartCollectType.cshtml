@@ -1,0 +1,85 @@
+﻿@model IEnumerable<RoundpayFinTech.AppCode.Model.SmartCollect>
+
+@if (Model.Any())
+{
+    int i = 0;
+    foreach (var item in Model)
+    {
+        i++;
+        <tr data-item-id="@item.Id">
+            <td>@item.Id</td>
+            <td>@item.SmartCollectTypeName</td>
+            <td>@item.Remark</td>
+            <td>
+                <div class="input-group-append">
+                    <span class="input-group-text switch switch-sm bg-white align">
+                        <input type="checkbox" id="chbIsActive_@i" @Html.Raw(item.IsActive ? "checked='checked'" : "")>
+                        <label for="chbIsActive_@i" class="font-weight-bold lbl">Active</label>
+                    </span>
+                </div>
+            </td>
+            @if (ApplicationSetting.IsECollectEnable)
+            {
+                <td>
+                    <div class="input-group-append">
+                        <span class="input-group-text switch switch-sm bg-white align">
+                            <input type="checkbox" id="chbIsVirtual_@i" @Html.Raw(item.IsVirtual ? "checked='checked'" : "")>
+                            <label for="chbIsVirtual_@i" class="font-weight-bold lbl">IsVirtual</label>
+                        </span>
+                    </div>
+                </td>
+            }
+            @if (ApplicationSetting.IsUPIQR)
+            {
+                <td>
+                    <div class="input-group-append">
+                        <span class="input-group-text switch switch-sm bg-white align">
+                            <input type="checkbox" id="chbIsQR_@i" @Html.Raw(item.IsQR ? "checked='checked'" : "")>
+                            <label for="chbIsQR_@i" class="font-weight-bold lbl">IsQR</label>
+                        </span>
+                    </div>
+                </td>
+            }
+            @if (ApplicationSetting.IsUPI)
+            {
+                <td>
+                    <div class="input-group-append">
+                        <span class="input-group-text switch switch-sm bg-white align">
+                            <input type="checkbox" id="chbIsVPA_@i" @Html.Raw(item.IsVPA ? "checked='checked'" : "")>
+                            <label for="chbIsVPA_@i" class="font-weight-bold lbl">IsVPA</label>
+                        </span>
+                    </div>
+                </td>
+            }
+
+
+        </tr>
+    }
+}
+
+<script>
+    $('#smartCollect tr :checkbox').unbind().change(function () {
+        let __this = $(this);
+        let param = {
+            Id: __this.closest('tr').data().itemId,
+            IsActive: $(__this.closest('tr').find('input')[0]).is(':checked'),
+            IsVirtual:$(__this.closest('tr').find('input[id^=chbIsVirtual]')).is(':checked'),
+            IsQR:$(__this.closest('tr').find('input[id^=chbIsQR]')).is(':checked'),
+            IsVPA:$(__this.closest('tr').find('input[id^=chbIsVPA]')).is(':checked')
+        };
+
+        $.post('/changeGetSmartCollectType', param).done(function (result) {
+            resultReload(result);
+            an.title = result.statuscode==1?'success':'failed';
+            an.content = result.msg;
+            an.alert(result.statuscode);
+        }).fail(function (xhr) {
+            an.title = 'Oops';
+            an.content = 'Server error';
+            an.alert(an.type.failed);
+            console.log(xhr.responseText);
+        });
+    })
+
+
+</script>

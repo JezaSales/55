@@ -1,0 +1,130 @@
+﻿@model RoundpayFinTech.AppCode.Model.ProcModel.Blog
+
+
+<div class="row">
+    <input type="text" hidden class="form-control" name="id" value="0">
+    <div class="col-sm-12">
+        <button type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="text-info">Add Blogs</h5><hr />
+    </div>
+    <div class="col-sm-12">
+        <div class="row">
+            <input type="hidden" id="hfid" value="@Model.ID" />
+            <div class="col-md-12">
+
+                @Html.Label("Title", "Title", new { @class = "lbl" })
+
+                @Html.TextBoxFor(x => x.Tittle, Model.Tittle, new { @class = "form-control", @placeholder = "Enter Title", @aria_describedby = "urlHelpTitle", @tabindex = 3 })
+                <small id="urlHelpTitle" class="form-text text-muted d-none">Title is mandatory</small>
+            </div>
+
+            <div class="col-sm-12">
+                <div class="col-md-12 mt-2">
+                    <textarea id="file-picker"></textarea>
+                <div class="form-group">
+                    <button type="button" class="btn btn-outline-dark" id="btnSaveBlogs" tabindex="20">Save Blogs</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script>
+
+    tinymce.init({
+        selector: 'textarea#file-picker',
+        plugins: 'image code',
+        toolbar: 'undo redo | link image | code',
+        /* enable title field in the Image dialog*/
+        image_title: true,
+        /* enable automatic uploads of images represented by blob or data URIs*/
+        automatic_uploads: true,
+        /*
+          URL of our upload handler (for more details check: https://www.tiny.cloud/docs/configure/file-image-upload/#images_upload_url)
+          images_upload_url: 'postAcceptor.php',
+          here we add custom filepicker only to Image dialog
+        */
+        file_picker_types: 'image',
+        /* and here's our custom image picker*/
+        file_picker_callback: function (cb, value, meta) {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+
+                input.onchange = function () {
+                var file = this.files[0];
+
+                var reader = new FileReader();
+                reader.onload = function () {
+                   
+                    var id = 'blobid' + (new Date()).getTime();
+                    var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                    var base64 = reader.result.split(',')[1];
+                    var blobInfo = blobCache.create(id, file, base64);
+                    blobCache.add(blobInfo);
+
+                    cb(blobInfo.blobUri(), { title: file.name });
+                };
+                reader.readAsDataURL(file);
+            };
+
+            input.click();
+        },
+        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+    });
+
+
+
+</script>
+
+<script>
+   
+    $('#btnSaveBlogs').click(function () {
+        debugger;
+        var blogdata = tinyMCE.get('file-picker').getContent();
+
+        var UserData = { id: $('#hfid').val(), Tittle: $('#Tittle').val(), ContentDetails: blogdata };
+        preloader.load();
+        $.ajax({
+            type: 'POST',
+            url: '/AddBlog',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(UserData),
+            success: function (result) {
+                an.title = result.statuscode == an.type.success ? "Well done" : "Oops";
+                an.content = result.msg;
+                an.alert(result.statuscode);
+            },
+            statusCode: {
+                500: function () {
+                    an.title = 'Oops';
+                    an.content = 'Server error';
+                    an.alert(an.type.failed);
+                },
+                0: function () {
+                    an.title = 'Oops';
+                    an.content = 'Internet Connection was broken';
+                    an.alert(an.type.failed);
+                }
+            },
+            error: function (xhr, result) {
+                an.title = "Oops";
+                an.content = result;
+                if (result === 'parsererror') {
+                    reload();
+                }
+            },
+            complete: function () {
+                preloader.remove();
+                location.reload();
+            }
+        });
+    });
+</script>
+
+

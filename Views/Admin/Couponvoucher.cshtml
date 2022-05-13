@@ -1,0 +1,114 @@
+﻿@model int;
+@{
+    ViewData["Title"] = "Coupon Voucher";
+}
+<input type="hidden" value="@Model" id="hfId" />
+<div aria-label="breadcrumb" class="breadcrumb" id="page-header">
+    <div class="container-fluid">
+        <h5 class="float-left"><i class="fa fa-users"></i> @ViewData["Title"]</h5>
+        <ol class="breadcrumb float-right">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+            <li class="breadcrumb-item">
+                Master
+            </li>
+            <li class="breadcrumb-item active">@ViewData["Title"]</li>
+        </ol>
+    </div>
+</div>
+<div id="__p" class="main-temp-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card mt-2">
+                    <div class="card-header bg-gradientorange text-white pb-1 pt-1">
+                        <div class="row">
+                            <div class="col-sm-8 text-monospace">
+                                <i class="fas fa-link"></i> @ViewData["Title"]
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                <div class="btn-group">
+                                    <button id="btnAdd" class="btn btn-outline-light btn-sm font-bold text-monospace pl-3 pr-3">New</button>
+                                    <button id="btnUploadExcel" class="btn btn-default btn-sm"> <i class="fa fa-file-excel text-success"></i> Upload</button>
+                                    <button id="btnDownloadExcel" class="btn btn-default btn-sm"><i class="fa fa-file-excel text-success"></i> Download</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-1">
+                        <couponStock></couponStock>
+                        <gridView></gridView>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var masterVoucherId = $('#hfId').val();
+        var loadData = (masterVId = -1) => {
+            masterVId = masterVId == -1 ? masterVoucherId : masterVId;
+            preloader.load();
+            $.post('/CouponVoucherList/' + masterVId)
+                .done(result => $('gridView').html(result))
+                .fail(xhr => {
+                    an.title = 'Oops';
+                    an.content = xhr.status == 0 ? 'Internet Connection was broken' : 'Server error';
+                    an.alert(an.type.failed);
+                }).always(() => preloader.remove());
+        };
+        var loadStock = (masterVId = -1) => {
+            masterVId = masterVId == -1 ? masterVoucherId : masterVId;
+            $.post('/GetCouponStock/', { masterVId: masterVId })
+                .done(result => $('couponStock').empty().append(result.map(x => `<span style="padding: 2px;border: 1px solid;margin: 2px;"><i class="fas fa-rupee-sign text-success"></i>${x.couponAmount} | ${x.stock}</span>`)))
+                .fail(xhr => {
+                    an.title = 'Oops';
+                    an.content = xhr.status == 0 ? 'Internet Connection was broken' : 'Server error';
+                    an.alert(an.type.failed);
+                })
+        };
+        var addVoucher = (id = 0, _e) => {
+            let __btn = $(_e.currentTarget);
+            btnLdr.Start(__btn, 'Please wait...');
+            preloader.load();
+            $.post('/CoupanVoucher/' + id).done(function (result) {
+                mdlA.content = result;
+                mdlA.id = 'mymodal';
+                mdlA.title = "Coupon Voucher";
+                mdlA.options.backdrop = 'static';
+                mdlA.modal(mdlA.size.large);
+                $('button.close span,#mdlCancel').unbind().click(() => mdlA.dispose());
+                var ctCoupon = { voctype: $("#txtVoucherType"), voremark: $("#txtRemark"), voopid: $("#ddlOperator"), btn: $("#btnCopSave") };
+            }).fail(function (xhr) {
+                an.title = 'Oops';
+                an.content = xhr.status == 0 ? 'Internet Connection was broken' : 'Server error';
+                an.alert(an.type.failed);
+            }).always(() => {
+                btnLdr.Stop(__btn);
+                preloader.remove();
+            });
+        };
+        loadData();
+        loadStock();
+        $('#btnAdd').click(e => addVoucher(0, e));
+        $('#btnDownloadExcel').click(() => { window.location.href = `/CouponVocher-Export/${masterVoucherId}` });
+        $('#btnUploadExcel').click(e => {
+            let __btn = $(e.currentTarget);
+            btnLdr.Start(__btn, 'Please wait..');
+            $.post(`/CouponUpload/${masterVoucherId}`)
+                .done(function (result) {
+                    var mdlA1 = mdlA;
+                    mdlA1.content = result;
+                    mdlA1.id = 'mymodal1';
+                    mdlA1.title = "Import/Export";
+                    mdlA1.options.backdrop = 'static';
+                    mdlA1.modal(mdlA1.size.default);
+                }).fail(function (xhr) {
+                    an.title = 'Oops';
+                    an.content = xhr.status == 0 ? 'Internet Connection was broken' : 'Server error';
+                    an.alert(an.type.failed);
+                }).always(() => btnLdr.Stop(__btn))
+        });
+    </script>
+}

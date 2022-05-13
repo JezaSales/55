@@ -1,0 +1,50 @@
+﻿@model RoundpayFinTech.AppCode.Model.AffiliatedItemViewModel
+
+@{
+
+}
+<section>
+    <label class="h2">Top Categories</label>
+    <div class="slick-carousel">
+        @{
+            if (Model.affiliatedOperator.Any())
+            {
+                foreach (var item in Model.affiliatedOperator)
+                {
+                    <div class="slide m-2">
+                        <a href="/GetAffilietedproduct?CategoriesID=@item.OID" id="btnclk">
+                            <img src="/image/operator/@Html.Raw(string.Concat(item.OID.ToString(), ".png"))" onerror="if (this.src != 'http://placekitten.com/g/320/240') this.src = 'http://placekitten.com/g/320/240';" class="img-fluid">
+                            <span class="lead pt-1 mb-0">@item.Name</span>
+                        </a>
+                    </div>
+                }
+            }
+        }
+    </div>
+</section>
+
+<section>
+    <label class="h2">Top Stores</label>
+    <div class="slick-carousel">
+        @{
+            if (Model.affiliatedVendor.Any())
+            {
+                foreach (var item in Model.affiliatedVendor)
+                {
+                    <div class="slide m-2">
+                        <a href="/GetAffilietedproduct?VendorID=@item.VID" id="btnclk">
+                            <img src="/image/vendor/@Html.Raw(string.Concat(item.VID.ToString(), ".png"))"
+                                 onerror="if (this.src != 'http://placekitten.com/g/320/240') this.src = 'http://placekitten.com/g/320/240';"
+                                 class="img-fluid">
+                            <span class="lead pt-1 mb-0">@item.Name</span>
+                        </a>
+                    </div>
+                }
+            }
+        }
+    </div>
+</section>
+
+<script>
+    slickCrousal();
+</script>

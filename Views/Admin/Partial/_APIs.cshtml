@@ -1,0 +1,125 @@
+﻿@model RoundpayFinTech.AppCode.Model.APIDetailViewModel
+@{
+    int i = 0;
+}
+<input type="hidden" value="@Model.OpTypeId" id="hdfOpTypeId" />
+<div class="row">
+    @foreach (var item in Model.APIs)
+    {
+        i++;
+        if (string.IsNullOrEmpty(Model.Action) || Model.Action.Equals("api", StringComparison.OrdinalIgnoreCase))
+        {
+            <div class="col-md-3 text-center">
+                <label class="font-weight-bold text-monospace mb-0" for="txtAPI_@Html.Raw(i+"_"+item.ID)">
+                    @item.Name
+                </label>
+                <div class="input-group input-group-sm">
+                    <input type="hidden" id="hidAPI_@Html.Raw(i+"_"+item.ID)" class="apiId" value="@item.ID" />
+                    <input type="text" id="txtAPI_@Html.Raw(i+"_"+item.ID)" class="form-control text-primary text-monospace text-center maxCount" aria-describedby="APIcountHelp" placeholder="Max Count" />
+                    <div class="input-group-append">
+                        <span class="input-group-text align">
+                            <input type="checkbox" name="chbGroupAPI_@i" class="isActive" id="chbAPI_@Html.Raw(i+"_"+item.ID)" />
+                        </span>
+                    </div>
+                    <input type="text" id="txtFCAPI_@Html.Raw(i+"_"+item.ID)" class="form-control text-info text-monospace text-center failoverCount" value="" aria-describedby="APIcountHelp" placeholder="Failover Count" />
+                </div>
+                <small id="helpCount_@Html.Raw(i+"_"+item.ID)" class="form-text text-muted d-none"></small>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-3 text-center mb-2">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text align">
+                            <input type="checkbox" name="chbGroupAPI_@i" class="isActive" data-api-id="@item.ID" id="chbAPI_@Html.Raw(i+"_"+item.ID)" />
+                        </span>
+                    </div>
+                    <label class="form-control" for="txtAPI_@Html.Raw(i+"_"+item.ID)">
+                        @item.Name
+                    </label>
+                </div>
+            </div>
+        }
+    }
+    @if (!Model.Action.Equals("api", StringComparison.OrdinalIgnoreCase))
+    {
+        <div class="col-md-3 text-center mb-2">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text align">
+                        <input type="checkbox" name="chbGroupAPI_0" class="isActive" data-api-id="0" id="chbAPI_0" />
+                    </span>
+                </div>
+                <label class="form-control" for="txtAPI_0">
+                    ::NO BACKUP API::
+                </label>
+            </div>
+        </div>
+    }
+</div>
+@if (Model.Action.Equals("api", StringComparison.OrdinalIgnoreCase))
+{
+    <script>
+        $('.maxCount,.failoverCount,.isActive').change(e => {
+            let parent = $(e.currentTarget).parents('.input-group');
+            let req = {
+                OpTypeId: $('#hdfOpTypeId').val(),
+                APIID: parent.find('.apiId').val(),
+                MaxCount: parent.find('.maxCount').val(),
+                FailoverCount: parent.find('.failoverCount').val(),
+                IsActive: parent.find('.isActive').is(':checked')
+            };
+            if (req.APIID == '') {
+                an.title = 'Oops';
+                an.content = 'API is not selected'
+                an.alert(an.type.failed);
+                return false;
+            }
+            if (req.MaxCount == '' || req.MaxCount < 1) {
+                an.title = 'Oops';
+                an.content = 'Please fill Maxcount(must be greater than 0)'
+                an.alert(an.type.failed);
+                return false;
+            }
+            if (req.FailoverCount == '') {
+                an.title = 'Oops';
+                an.content = 'Please fill FailoverCount';
+                an.alert(an.type.failed);
+                return false;
+            }
+            $.post('/Admin/OpTypeWiseAPISwitch', req).done(result => {
+                an.title = result.statuscode == 1 ? 'Well done' : 'Oops';
+                an.content = result.msg;
+                an.alert(result.statuscode);
+            }).fail(function (xhr) {
+                an.title = 'Oops';
+                an.content = xhr.status == 0 ? 'Internet Connection was broken' : 'Server error';
+                an.alert(an.type.failed);
+            });
+        });
+    </script>
+}
+else
+{
+    <script>
+        var __action = "@Model.Action?.ToLower()";
+        var __ddlSelector = {
+            bulkbackupapi: "ddlBackupApi_",
+            bulkretail: "ddlBackupApiRet_",
+            bulkreal: "ddlRealApi_"
+        };
+        $('.isActive').change(e => {
+            var _apiId = $(e.currentTarget).data().apiId;
+            var __row = $('#tblAPIOpCode').find('tbody tr');
+            __row.each(function (i) {
+                let selectedRow = $(this);
+                let __s = `[id^=${__ddlSelector[__action]}] option[value="${_apiId}"]`;
+                selectedRow.find(__s).prop("selected", true).change();
+                if (__row.length == (i + 1)) {
+                    $('[data-dismiss="modal"]').click();
+                }
+            });
+        });
+    </script>
+}

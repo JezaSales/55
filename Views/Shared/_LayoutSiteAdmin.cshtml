@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["LogoutKey"] = "redirectToLogin";
+    ViewData["Title"] = ViewData["CName"];
+}
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+    <div style="display:none">@ViewData["LogoutKey"]</div>
+    @*@if (ApplicationSetting.IsRPOnly)
+    {
+        <script charset="UTF-8" src="//web.webpushs.com/js/push/9b2b97541217dbc110d8cb05816349a4_1.js" async></script>
+    }*@
+</body>
+
+</html>

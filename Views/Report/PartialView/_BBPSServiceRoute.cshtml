@@ -1,0 +1,119 @@
+﻿@using RoundpayFinTech.AppCode.Model
+@model Serviceroute
+
+<div class="card-body" id="_P" style="">
+    <div class="form-group row">
+        <div class="col-lg-6">
+            <label> Service Name </label>
+            <input type="text" class="form-control" value="BBPS" readonly="readonly" />
+        </div>
+        <div class="col-lg-6">
+            <label> Service Route </label>
+            <select class="form-control" asp-for="@Model.TransactAPIType" id="ddlselectbbpsroute">
+                <option value="0">--Select--</option>
+                <option value="1">Lapu</option>
+                <option value="2">Real</option>
+                <option value="3">Both</option>
+            </select>
+        </div>
+        @{
+            string dispaly = @Model.TransactAPIType == 3 ? "" : "display:none";
+        }
+        <div class="col-lg-12" id="priority" style="@dispaly">
+            <label> Service Route Priority </label>
+            <select class="form-control" asp-for="@Model.TransactAPIPriority" id="ddlpriority">
+                <option value="0">--Select--</option>
+                <option value="1">Lapu</option>
+                <option value="2">Real</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+
+        <button type="button" id="btnsubmit" class="btn btn-info">Save</button>
+    </div>
+    <div class="alert alert-info" role="alert">
+        Note:
+    </div>
+
+    <ul style="list-style-type:disc;">
+        <li>
+            Offline Bill Payment Will Reflect at Biller’s Portal Within 2 Working Days.
+        </li>
+        <li>
+            Offline Bill Payment can be in Pending State for 6 hours.
+        </li>
+
+        <li>
+            Offline Bill Payment Can become refund till next day .We Will Not be Liable for Any Late Payment Fee Due to Delay updation of Bill Amount on Biller's End or refunded by biller within 1 working days.
+        </li>
+        <li>
+            Offline Bill Payment Will be in Pending State for next 6 hours.
+            Online-BBPS Bill Payment Will Update as Per NPCI TAT 2-36 Hours.
+        </li>
+        <li>
+            Please Make Bill Payment Before Due Date.
+        </li>
+        <li>
+            We Will Not be Liable for Any Late Payment Fee Due to Delay updation of Bill Amount on Biller's End.
+        </li>
+    </ul>
+    <ul style="list-style-type:disc;">
+        <li>
+            ऑफ़लाइन बिल भुगतान 2 कार्य दिवसों के भीतर बिलर के पोर्टल पर दिखाई देगा।
+        </li>
+        <li>
+            ऑफलाइन बिल भुगतान अगले दिन तक रिफंड हो सकता है। बिलर की ओर से बिल राशि के देरी से अद्यतन या 1 के भीतर बिलर द्वारा वापस किए जाने के कारण हम किसी भी विलंब भुगतान शुल्क के लिए उत्तरदायी नहीं होंगे।
+        </li>
+        <li>
+            ऑनलाइन-बीबीपीएस बिल भुगतान एनपीसीआई टीएटी 2-36 घंटे के अनुसार अपडेट होगा।
+        </li>
+        <li>
+            कृपया देय तिथि से पहले बिल भुगतान करें।
+        </li>
+        <li>
+            बिलर की ओर से बिल राशि के विलंब से अद्यतन होने के कारण किसी भी विलंब भुगतान शुल्क के लिए हम उत्तरदायी नहीं होंगे।
+        </li>
+        <li>
+            ऑफलाइन बिल भुगतान 6 घंटे के लिए लंबित स्थिति में हो सकता है।
+        </li>
+    </ul>
+</div>
+<script>
+    $('#ddlselectbbpsroute').change(function () {
+        var ddlvalue = $('#ddlselectbbpsroute').val();
+        if (ddlvalue == 3) {
+            $('#priority').show();
+        }
+        else {
+            $('#priority').hide();
+            $('#ddlpriority').val(0);
+        }
+    })
+    $('#btnsubmit').click(function () {
+        var ddlvalue = $('#ddlselectbbpsroute').val();
+        var ddlpriority = $('#ddlpriority').val();
+        if (ddlvalue == 0) {
+            an.title = "Validation";
+            an.content = "Select Service";
+            an.alert(-1);
+            return;
+        }
+        if (ddlvalue == 3) {
+            if (ddlpriority == 0) {
+                an.title = "Validation";
+                an.content = "Select Service Priority";
+                an.alert(-1);
+                return;
+            }
+        }
+        $.post('/BBPS-ServiceRoute-Save', { sr: ddlvalue, srp: ddlpriority })
+            .done(function (result) {
+                an.title = result.statuscode == an.type.success ? "Well done!" : "Oops! Error";
+                an.content = result.msg;
+                an.alert(result.statuscode);
+                mdlA.dispose();
+            })
+    })
+</script>

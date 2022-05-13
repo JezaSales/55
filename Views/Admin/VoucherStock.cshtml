@@ -1,0 +1,208 @@
+﻿@{
+    ViewData["Title"] = "VoucherStock";
+}
+
+@{
+    <style type="text/css">
+        .cus_dropdown a {
+            font-size: 13px;
+        }
+
+        .table thead th, .table-bordered td {
+            text-align: center;
+            border: 1px solid #c5c5af !important;
+        }
+        .custable_responsive {
+            min-height: 350px !important;
+        }
+
+        /* width */
+        ::-webkit-scrollbar {
+            height: 5px !important;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+        .form-control {
+           
+            padding: 0.375rem 1.75rem!important;
+           
+        }
+    </style>
+}
+@model IEnumerable<RoundpayFinTech.AppCode.Model.ProcModel.ApiListModel>
+<input type="hidden" id="VoucherID" value="@ViewBag.VoucherID" />
+
+<div aria-label="breadcrumb" class="breadcrumb" id="page-header">
+    <div class="container-fluid">
+        <h5 class="float-left"><i class="fa fa-users"></i> </h5>
+        <ol class="breadcrumb float-right">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+            <li class="breadcrumb-item">
+                Master
+            </li>
+            <li class="breadcrumb-item active">Voucher Stock</li>
+        </ol>
+    </div>
+</div>
+<div id="__p" class="main-temp-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="card mt-2">
+                <div class="card-header bg-gradientorange text-white pb-1">
+                    <div class="row">
+                        <div class="col-md-6 text-monospace">
+                            <i class="fas fa-link"></i> Voucher Stock
+                        </div>
+
+
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div id="dvAPI" style="float:right;">
+                                @{
+                                    var list = new SelectList(Model, "Id", "Name");
+                                }
+                                <label class="lbl" for="ddlApiName">Choose Vendor Api</label>
+                                <select aria-describedby="txtApi" class="form-control" id="ddlApi1" tabindex="4" asp-items="@list">
+                                    <option value="0"> :: Select Vendor :: </option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="card-body p-1">
+
+                    <div class="table-responsive custable_responsive" style="max-height:calc(100vh - 300px)">
+                        <table class="table table-bordered table-striped table-condensed" id="tblVoucherCoupon">
+                            <thead class="bg-tableth">
+                                <tr>
+                                    <th>#</th>
+                                    <th>ID</th>
+                                    <th>Denomination</th>
+                                    <th>VoucherID</th>
+                                    <th>Voucher Type</th>
+                                    <th>Total Count</th>
+                                    <th>Total Amount</th>
+                                    <th>Remain</th>
+                                    <th>Remain Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('.body-content').removeClass('container').addClass('container-fluid');
+            load();
+            $('table').fixTableHeader();
+            $('#ddlApi1').on('change', function () {
+                //alert(parseInt($(this).val()));
+                //return;
+                var id = 0;
+                if (parseInt($(this).val()) < 1) {
+                    $v.showErrorFor($(this), 'Select Vendor Api', 1);
+                    return;
+                }
+                id = $(this).val();
+                an.title = 'Info';
+                an.content = 'Loading Vendor Api detail for ' + $('#' + this.id + ' :selected').text();
+                an.alert(an.type.info);
+                preloader.load();
+                $.post('/VoucherStockList', { APIID: id })
+                    .done(function (result) {
+                        an.remove();
+                        $('#__p tbody').html(result);
+
+                    }).catch(function (xhr, e, m) {
+
+                    }).fail(function (xhr) {
+                        $(this).attr('checked', Is == false);
+                        if (xhr.status == 500) {
+                            an.title = 'Oops';
+                            an.content = 'Server error';
+                            an.alert(an.type.failed);
+                        }
+                        if (xhr.status == 0) {
+                            an.title = 'Oops';
+                            an.content = 'Internet Connection was broken';
+                            an.alert(an.type.failed);
+                        }
+                    })
+                    .always(function () {
+                        preloader.remove();
+                    });
+            });
+        });
+
+        var load = function () {
+            preloader.load();
+            $.post('/VoucherStockList')
+                .done(function (result) {
+                    resultReload(result);
+                    $('#__p tbody').html(result);
+                    TotalRemains();
+                })
+                .fail(xhr => {
+                    an.title = 'Oops';
+                    an.content = xhr.status === 0 ? 'Internet Connection was broken' : 'Server error';
+                    an.alert(an.type.failed);
+                })
+                .always(function () {
+                    preloader.remove();
+                });
+        };
+
+        function TotalRemains() {
+            var TotalsCount = 0;
+            var AmountTotal = 0;
+            var TotalRemains = 0;
+            var RemainAmount = 0;
+            var htmldata = "";
+            $("#tblVoucherCoupon tbody tr").each(function () {
+                var TotalsC = $(this).find('td:eq(5)').text();
+                var Tamounts = $(this).find('td:eq(6)').text();
+                var Remains = $(this).find('td:eq(7)').text();
+                var Ramount = $(this).find('td:eq(8)').text();
+                if (parseInt(Tamounts)) {
+                    AmountTotal += parseInt(Tamounts)
+                }
+                if (parseInt(TotalsC)) {
+                    TotalsCount += parseInt(TotalsC)
+                }
+                if (parseInt(Remains)) {
+                    TotalRemains += parseInt(Remains)
+                }
+                if (parseInt(Ramount)) {
+                    RemainAmount += parseInt(Ramount)
+                }
+            });
+
+            htmldata += '<tr>';
+            htmldata += '<td colspan="5" class="text-centre">Total<td colspan="1">' + TotalsCount + '</td><td colspan="1">' + AmountTotal + '</td></td><td colspan="1">' + TotalRemains + '</td><td colspan="1">' + RemainAmount + '</td>';
+            htmldata += '</tr>';
+
+            $("#tblVoucherCoupon tbody").append(htmldata);
+        }
+
+
+
+        
+
+               
+    </script>
+}

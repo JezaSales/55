@@ -1,0 +1,73 @@
+﻿@model RoundpayFinTech.AppCode.Model.AffiliateVendors
+
+<style>
+    img {
+        width: 5rem;
+        vertical-align: middle;
+        border-style: none;
+    }
+</style>
+<div class="row">
+    <div class="col-sm-12">
+        <input type="hidden" id="hfid" value="@Model.Id" />
+        <div class="form-group">
+            Vendor Name
+            <input type="text" class="form-control" id="txtVendorName" value="@Model.VendorName" />
+        </div>
+        <div class="form-group">
+            Vendor Icon
+            <input type="file" class="form-control" id="vendoricon" />
+            <img src="/Image/vendor/@Html.Raw($"{Model.VendorIcon}.png")" />
+        </div>
+        <div class="form-group">
+            Vendor Banner
+            <input type="file" class="form-control" id="banner" />
+            <img src="/Image/AffiliateItem/0/@Model.VendorBanner" data-vendor-Banner="" id="imgBanner" />
+        </div>
+        <div class="form-group">
+            <span class="switch switch-sm">
+                <input type="checkbox" class="switch" id="chkStatus" checked="@Model.IsActive" />
+                <label for="chkStatus">IsActive</label>
+            </span>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-outline-success" id="btnSave">SAVE</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $('#btnSave').click(e => AddItem());
+    var AddItem = () => {
+        var formData = new FormData();
+        formData.append('vIcon', $("#vendoricon")[0].files[0]);
+        formData.append('vBanner', $("#banner")[0].files[0]);
+        formData.append('Id', $('#hfid').val());
+        formData.append('VendorName', $('#txtVendorName').val());
+        formData.append('IsActive', $('#chkStatus').is(':checked'));
+        formData.append('VendorBanner', $('#imgBanner').data().vendorBanner);
+        return $.ajax({
+            type: 'POST',
+            url: '/update-AffiliateVendor',
+            processData: false,
+            contentType: false,
+            data: formData,
+            async: false,
+            success: function (result) {
+                an.title = result.statuscode === -1 ? 'Oops' : 'Success';
+                an.content = result.msg;
+                an.alert(result.statuscode);
+                if (result.statuscode === 1) {
+                    //return result;
+                }
+            },
+            error: function (result) {
+                an.title = 'Oops';
+                an.content = 'An error occured!';
+                an.alert(an.type.failed);
+            },
+        });
+    };
+</script>
+

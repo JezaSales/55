@@ -1,0 +1,126 @@
+﻿@model IEnumerable<RoundpayFinTech.AppCode.Model.SlabdetailServicewise>
+
+<style>
+    .text-orientation-vertical {
+        writing-mode: vertical-lr;
+        text-orientation: mixed;
+        transform: rotate(180deg);
+    }
+
+    hr.style14 {
+        border: 0;
+        height: 1px;
+        background-image: -webkit-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+        background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+        background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+        background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+    }
+
+    input[type="text"] {
+        text-align: right;
+        padding-right: 2px;
+    }
+</style>
+<div class="col-md-12">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h5 class="text-info">Commission Detail</h5><hr />
+    <div class="table-responsive">
+        <table class="table table-hover" id="tblRSD">
+            <thead class="shadow">
+                <tr>
+                    <th>#</th>
+                    @if (ApplicationSetting.IsB2CEnabled)
+                    {
+                        <th>Services</th>
+                    }
+                    else
+                    {
+                        <th>OPTypes</th>
+                    }
+
+                    <th>
+                        Commission Wise
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    int i = 0;
+                    @foreach (var item in Model)
+                    {
+                        i++;
+                <tr data-service-id="@item.ServiceID" data-optype-id="@item.OpTypeID" data-slab-id="@item.SlabID">
+                    <td>@i</td>
+                    <td>@item.Name</td>
+                    <td class="align-middle">
+                        <div class="input-group">
+                            <div class="form-inline">
+                                <input id="txtComm_@i" value="@item.Comm" name="commtext" onchange="UpdateB2Cdislaycommission(this)" type="text" class="form-control-sm _comm">
+                            </div>
+
+                            <div class="btn-group commType">
+                                <button class="btn btn-sm btn-dark active" onclick="UpdateB2Cdislaycommission(this)" style="border-top-left-radius:0;border-bottom-left-radius:0;">C</button>
+                                <button class="btn btn-sm btn-outline-dark" onclick="UpdateB2Cdislaycommission(this)" style="border-top-right-radius:0;border-bottom-right-radius:0;">S</button>
+                            </div>
+
+                            <div class="btn-group amtType">
+                                <button class="btn btn-sm btn-dark active" onclick="UpdateB2Cdislaycommission(this)" style="border-top-left-radius:0;border-bottom-left-radius:0;">PER</button>
+                                <button class="btn btn-sm btn-outline-dark" onclick="UpdateB2Cdislaycommission(this)" style="border-top-right-radius:0;border-bottom-right-radius:0;">FIX</button>
+                            </div>
+                        </div>
+                      </td>
+
+
+                </tr>
+                    }
+                }
+                </tbody>
+        </table>
+
+    </div>
+</div>
+
+<script>
+
+    //$(document).ready(() => {
+    //    $('#ddlOType').on('change', () => loadPartial(data().SlabID));
+    //     $('#txtComm_').keydown((e) => {
+    //        var k = e.which;
+    //        if (k == 110 || k == 46 || k == 17 || k == 123 || k == 18 || k == 116 || k == 8) {
+    //            return true
+    //        }
+    //        else if ((k < 48 || k > 57) && (k < 96 || k > 105)) {
+    //            e.preventDefault();
+    //            return false;
+    //        }
+    //    });
+    //    //$('#btnSetAll').on('click', () => {
+    //    //    if ($('#txtComm_').val() == '' || $('#txtAmtForAll').val() == undefined) {
+    //    //        $('#txtComm_').focus();
+    //    //        return false
+    //    //    }
+    //        const trCount = $('#tblRSD tbody tr').length;
+    //        $('#tblRSD tbody tr').each(function (i) {
+    //            var param = {
+    //                OID: parseInt($(this).data().itemId),
+    //                SlabID: parseInt($('#hid').val()),
+    //                Comm: parseFloat($('#txtAmtForAll').val()),
+    //                CommType: $('#btnComTypeForAll button.active').text()[0] === 'S' ? 1 : 0,
+    //                AmtType: $('#btnAmtTypeForAll button.active').text()[0] === 'F' ? 1 : 0,
+    //                //RComm: parseFloat(Rcomm),
+    //                //RCommType: RcommType === 'S' ? 1 : 0,
+    //                //RAmtType: RamtType === 'F' ? 1 : 0,
+    //                RoleID: parseInt($('#ddlRole').val())
+    //            }
+    //            B2CdislaycommissionUpdate(param);
+    //            if (trCount == (i + 1)) {
+    //            $('button.close span,#mdlCancel').click();
+    //        }
+    //        });
+    //    });
+   
+
+</script>

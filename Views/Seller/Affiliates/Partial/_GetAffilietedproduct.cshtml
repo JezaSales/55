@@ -1,0 +1,84 @@
+﻿@model IEnumerable<RoundpayFinTech.AppCode.Model.AffiliatedItem>
+@{
+
+}
+
+<style>
+    .card {
+        margin: 11px !important;
+    }
+
+    img {
+        width: 162.625px;
+    }
+</style>
+<div class="row">
+    @{
+        if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                if (item.IsImageURL)
+
+                {
+                    <div class="cursor-pointer btclk" id="btclk" data-item-id="@item.ID">
+                        <div class="card a1" style="width: 15rem; display: inline-block">
+
+                            <div class="card-body">
+                                <img class="img-fluid" src="@item.ImgUrl" />
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                }
+                else if (!item.IsImageURL)
+                {
+                    <div class="cursor-pointer btclk" id="btclk" data-item-id="@item.ID">
+                        <div class="card a1" style="width: 15rem; display: inline-block">
+
+                            <div class="card-body">
+                                <img class="img-fluid" src="~/image/AffiliateItem/@item.VendorID/@item.ImgUrl" />
+                            </div>
+                        </div>
+                    </div>
+
+
+              }
+
+
+                     }
+                          }
+                                else
+                                {
+                                <div class="col-md-12">
+                                    <h4 class="text-danger">No Data Found</h4>
+                                </div>
+                                }
+                            }
+                       </div>
+
+<script>
+    $('.btclk').click(e => {
+        preloader.load();
+        let ID = $(e.currentTarget).data().itemId;
+        $.post('/GetAffilieted', { ID: ID })
+            .done(result => {
+                debugger;
+                window.location.href = result[0].link
+            })
+            .fail(xhr => {
+                an.title = 'Oops';
+                an.content = xhr.status == 0 ? 'Internet Connection was broken' : 'Server error';
+                an.alert(an.type.failed);
+            })
+            .always(() => preloader.remove());
+    });
+
+</script>
+
+
+
+
+

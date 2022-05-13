@@ -1,0 +1,106 @@
+﻿
+<script src="jquery-3.6.0.min.js"></script>
+<div id="Affcontent"></div>
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            var l = location.href.split('=');
+            //var OID = l[l.length - 1];
+            //var VID = l[l.length - 1];
+            //Aff(OID);
+            //Afff(VID);
+            let queryString = getQueryString();
+            if (queryString.CategoriesID) {
+                loadCategories(queryString.CategoriesID);
+            }
+            else if (queryString.VendorID) {
+                loadVendors(queryString.VendorID);
+            }
+        });
+
+        var Aff = function (OID) {
+
+            $.post('/_GetAffilietedproduct', { OID: OID })
+                .done(result => {
+                    $("#Affcontent").html(result)
+                })
+                .fail(xhr => {
+                    an.title = 'Oops';
+                    an.content = xhr.status == 0 ? 'Internet Connection was broken' : 'Server error';
+                    an.alert(an.type.failed);
+                })
+                .always(() => preloader.remove());
+
+        }
+
+        var Afff = function (VID) {
+
+            $.post('/_GetAffilietedVproduct', { VID: VID })
+                .done(result => {
+                    debugger;
+                    $("#Affcontent").html(result)
+                })
+                .fail(xhr => {
+                    an.title = 'Oops';
+                    an.content = xhr.status == 0 ? 'Internet Connection was broken' : 'Server error';
+                    an.alert(an.type.failed);
+                })
+                .always(() => preloader.remove());
+
+        }
+
+        var loadCategories = (categoryId) => {
+            $.post('/GetAfCategoriesWithProduct', { categoryId: categoryId })
+                .done(result => {
+                    console.log(result);
+                    $('#Affcontent').append(result.map(x => `<div class="col-sm-3">
+                                                                    <div class="h3">${x.categoryName}</div>
+                                                                    <div>${x.items.map(y => `<div class="redirectToLink" data-item-id="${y.id}">${y.imgUrl}<span class="d-block">${y.tittle}</span></div>`)}</div>
+                                                                </div>`
+                    ).join(''));
+                })
+                .fail(xhr => {
+                    an.title = 'Oops';
+                    an.content = xhr.status == 0 ? 'Internet Connection was broken' : 'Server error';
+                    an.alert(an.type.failed);
+                });
+        };
+        var loadVendors = (vendorId) => {
+            $.post('/GetAfVendorsWithProduct', { vendorId: vendorId })
+                .done(result => {
+                    console.log(result);
+                    $('#Affcontent').append(result.map(x => `<div class="col-sm-3">
+                                                                    <div class="h3">${x.vendorName}</div>
+                                                                    <div>${x.items.map(y => `<div class="redirectToLink" data-item-id="${y.id}">${y.imgUrl}<span class="d-block">${y.tittle}</span></div>`)}</div>
+                                                                </div>`
+                    ).join(''));
+                })
+                .fail(xhr => {
+                    an.title = 'Oops';
+                    an.content = xhr.status == 0 ? 'Internet Connection was broken' : 'Server error';
+                    an.alert(an.type.failed);
+                });
+        };
+
+        $('body').on('click', '.redirectToLink', function () {
+            let __this = $(this);
+            let __id = __this.data().itemId;
+            $.post('/GenrateAfLink', { productId: __id }).done(result => {
+                if (result.statuscode === 1)
+                    window.location.href = result.msg;
+                else {
+                    an.title = 'Oops';
+                    an.content = result.msg;
+                    an.alert(an.type.failed);
+                }
+            }).fail(xhr => {
+                an.title = 'Oops';
+                an.content = 'Server Error';
+                an.alert(an.type.failed);
+            }).always(() => {
+
+            });
+        });
+    </script>
+}

@@ -1,0 +1,81 @@
+﻿<div class="col-md-12">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3>Onboard Customer</h3>
+    <div class="form-group">
+        @Html.Label("txtFirstName", "First Name", new { @class = "lbl" })
+        @Html.TextBox("txtFirstName", null, new { @class = "form-control ", @placeholder = "Enter First Name", @aria_describedby = "txtFirstNameHelp", @tabindex = 4 })
+        <small id="txtFirstNameHelp" class="form-text text-danger  d-none">Invalid First Name</small>
+    </div>
+    <div class="form-group">
+        @Html.Label("txtMidName", "Middle Name", new { @class = "lbl" })
+        @Html.TextBox("txtMidName", null, new { @class = "form-control ", @placeholder = "Enter Middle Name", @aria_describedby = "txtMidNameHelp", @tabindex = 4 })
+        <small id="txtMidNameHelp" class="form-text text-danger  d-none">Invalid Middle Name</small>
+    </div>
+     <div class="form-group">
+        @Html.Label("txtLastName", "Last Name", new { @class = "lbl" })
+        @Html.TextBox("txtLastName", null, new { @class = "form-control ", @placeholder = "Enter Last Name", @aria_describedby = "txtLastNameHelp", @tabindex = 4 })
+        <small id="txtLastNameHelp" class="form-text text-danger  d-none">Invalid Last Name</small>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="custom-radio">
+                    <input class="form-check-input rbtntype" type="radio" name="rdoGType" id="rdoMale" checked="checked">
+                    <label class="form-check-label" for="rdoMale">
+                        Male
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="custom-radio">
+                    <input class="form-check-input rbtntype" type="radio" name="rdoGType" id="rdoFemale">
+                    <label class="form-check-label" for="rdoFemale">
+                        Female
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("txtDOB", "Date Of Birth", new { @class = "lbl" })
+        @Html.TextBox("txtDOB", null, new { @class = "form-control ", @placeholder = "Enter DOB", @aria_describedby = "txtDOBHelp", @tabindex = 3 })
+        <small id="txtDOBHelp" class="form-text text-danger  d-none">Invalid Date Of Birth</small>
+    </div>
+    <div class="form-group">
+        @Html.Label("txtGSTIN", "GSTIN", new { @class = "lbl" })
+        @Html.TextBox("txtGSTIN", null, new { @class = "form-control ", @placeholder = "Enter GSTIN", @aria_describedby = "txtGSTINHelp", @tabindex = 1 })
+        <small id="txtGSTINHelp" class="form-text text-danger  d-none">Invalid GSTIN</small>
+    </div>
+    <div class="form-group">
+        @Html.Label("txtUID", "UID", new { @class = "lbl" })
+        @Html.TextBox("txtUID", null, new { @class = "form-control ", @placeholder = "Enter Mobile Number", @aria_describedby = "MobileHelp", @tabindex = 2 })
+        <small id="MobileHelp" class="form-text text-danger  d-none">Invalid Mobile Number</small>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="custom-radio">
+                    <input class="form-check-input rbtntype" type="radio" name="rdoType" id="rdoNonKYC" checked="checked">
+                    <label class="form-check-label" for="rdoNonKYC">
+                        Non-KYC
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="custom-radio">
+                    <input class="form-check-input rbtntype" type="radio" name="rdoType" id="rdoKYC">
+                    <label class="form-check-label" for="rdoKYC">
+                        KYC
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-outline-dark" onclick="createBeniP()">Add Beneficiary</button>
+    <button class="btn btn-dark" id="mdlCancel">Cancel</button>
+</div>
+<script>
+    $('#txtMobileNo').val($('#txtSearch').val());
+</script>

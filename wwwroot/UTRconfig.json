@@ -1,0 +1,50 @@
+[
+  {
+    "bank": "510 ARMY BASE W/S CREDIT COOP PRIMARY BANK LTD.",
+    "transactionType": "UPI",
+    "identifier": "UPI",
+    "startWith": "//",
+    "endWith": "/",
+    "bankID": "1948"
+  },
+  {
+    "bank": "ICICI BANK LTD.",
+    "transactionType": "UPI",
+    "identifier": "UPI/",
+    "startWith": "UPI/",
+    "endWith": "/",
+    "bankID": "33"
+  },
+  {
+    "bank": "ICICI BANK LTD.",
+    "transactionType": "IMPS",
+    "identifier": "MMT/IMPS/",
+    "startWith": "IMPS/",
+    "endWith": "/",
+    "bankID": "33"
+  },
+  {
+    "bank": "ICICI BANK LTD.",
+    "transactionType": "NEFT",
+    "identifier": "INF/NEFT/",
+    "startWith": "NEFT/",
+    "endWith": "/",
+    "bankID": "33"
+  },
+  {
+    "bank": "ICICI BANK LTD.",
+    "transactionType": "NEFT",
+    "identifier": "INF/INFT",
+    "startWith": "INFT/",
+    "endWith": "/",
+    "bankID": "33"
+  },
+  {
+    "bank": "ICICI BANK LTD.",
+    "transactionType": "RTGS",
+    "identifier": "RTGS/",
+    "startWith": "/",
+    "endWith": "/",
+    "bankID": "33"
+  }
+]

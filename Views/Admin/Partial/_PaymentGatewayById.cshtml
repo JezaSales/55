@@ -1,0 +1,47 @@
+﻿@model RoundpayFinTech.AppCode.Model.PaymentGatewayEntity
+@{
+    var mdl = (Model.PGateways ?? new List<RoundpayFinTech.AppCode.Model.PaymentGateway>()).FirstOrDefault();
+    if (mdl == null)
+    {
+        mdl = new RoundpayFinTech.AppCode.Model.PaymentGateway();
+    }
+    var selectList = new SelectList(Model.MASTERPGateways, "ID", "Name");
+}
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            @if (mdl.ID > 0)
+            {
+                <label id="Name" class="d-block text-info h5">@mdl.Name</label>
+            }
+            else
+            {
+                @Html.Label("ddlMPG", "Payment Gateway Type", new { @class = "lbl" })
+                <select id="ddlMPG" class="custom-select custom-select-md mb3" asp-items="selectList">
+                </select>
+            }
+        </div>
+        <div class="form-group">
+            <label for="MerchantID">MerchantID</label>
+            <input type="text" class="form-control" id="MerchantID" name="MerchantID" value="@mdl.MerchantID">
+        </div>
+        <div class="form-group">
+            <label for="MerchantKey">MerchantKey</label>
+            <input class="form-control" type="text" id="MerchantKey" name="MerchantKey" value="@mdl.MerchantKey">
+        </div>
+       
+        <div class="form-group">
+            <span class="switch switch-sm">
+                <input type="checkbox" class="switch" id="IsActive" name="IsActive" @Html.Raw(mdl.IsActive ? "checked" : "")>
+                <label for="IsActive">IsActive</label>
+            </span>
+        </div>
+        <div class="form-group text-right">
+            <button type="button" class="btn btn-dark" id="btnSave" tabindex="34">Save</button>
+            <button class="btn btn-danger" id="mdlCancel">Cancel</button>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>

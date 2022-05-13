@@ -1,0 +1,11 @@
+[
+  {
+    "TemplateId": 1,
+    "TemplateName": "Template 1",
+    "DemoPath": "/siteconfig/Templates/1/home.html",
+    "DemoImage": "/SiteConfig/Templates/1/Img/template-1.png",
+    "Assets": [
+      "<link href='/siteconfig/Templates/1/css/theme-1.css' rel='stylesheet' />"
+    ]
+  }
+]

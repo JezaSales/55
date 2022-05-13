@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RoundpayFinTech</name>
+    </assembly>
+    <members>
+        <member name="T:RoundpayFinTech.AppCode.Model.ROffer.MplanDTHHeavyRefresh">
+            <summary>
+            For Mplan Heavy Refresh
+            </summary>
+        </member>
+        <member name="F:RoundpayFinTech.AppCode.MiddleLayer.PublicServiceML._lr">
+            <summary>
+            Login response 
+            it contains login sessions and user related info..
+            </summary>
+        </member>
+        <member name="M:RoundpayFinTech.AppCode.MiddleLayer.PublicServiceML.GetFieldList(System.Int32)">
+             <summary>
+             Gets The Fields List of the related service 
+            Accepts service id as parameter
+             </summary>
+        </member>
+        <member name="M:RoundpayFinTech.AppCode.MiddleLayer.PublicServiceML.GetFieldListByID(System.Int32)">
+            <summary>
+            Gets dynamic form fields list by id
+            </summary>
+        </member>
+        <member name="M:RoundpayFinTech.AppCode.MiddleLayer.PublicServiceML.SaveField(RoundpayFinTech.AppCode.Model.FieldMasterModel)">
+            <summary>
+            Saves fields for a dynamic form
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RoundpayFinTech.AppCode.MiddleLayer.PublicServiceML.SaveVocabOption(RoundpayFinTech.AppCode.Model.VocabList)">
+            <summary>
+            Save options for vocab
+            it shuld be multiple
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RoundpayFinTech.AppCode.MiddleLayer.PublicServiceML.GetVocabMaster">
+            <summary>
+            Gets the vocabs master list
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RoundpayFinTech.AppCode.MiddleLayer.PublicServiceML.ShowForm(System.Int32)">
+            <summary>
+            Draws a dynamic form on the webpage
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RoundpayFinTech.AppCode.MiddleLayer.PublicServiceML.SavePESFormML(Microsoft.AspNetCore.Http.IFormCollection)">
+            <summary>
+            Saves all the input values to the database which submitted in dynamic form
+            </summary>
+            <param name="formdata"></param>
+            <returns></returns>
+        </member>
+        <member name="T:RoundpayFinTech.AppCode.ThirdParty.Mahagram.MGOnboardingReq">
+            Note: In this API For AEPS and DMT services Onboarding same but for BBPS onboarding differ 
+            *
+        </member>
+        <member name="F:RoundpayFinTech.AppCode.ThirdParty.YesBank.YesBankTransactionStatus.Pending">
+                     *  0 - Pending
+                        1 - NEFT initialized
+                        2 - Credited
+                        3 - Rejected
+                        4 - Refund Processed
+                        5 - Sender Registration
+                        6 - Failure
+                        7 - Card Registration
+                        8 - Initialized
+                     * *
+        </member>
+        <member name="M:RoundpayFinTech.Controllers.JWTAuthorizeController.Authenticate(RoundpayFinTech.AppCode.Model.JWTReqUsers)">
+            <summary>
+            This Service is used to generate a JWT Token.
+            Note: All API requests must be authenticated with a JWT Token in the request.
+            </summary>
+            <param name="usersdata"></param>
+            <returns>{"statusCode": 1,"msg": "Token Generated Successfully.","token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJ0b2tlbiI6ImRmOThmMjYxOTUxZmMzYzgyMTc2NTFlNjBjMTBjNTk2IiwibmJmIjoxNjQ3ODQ4NjYwLCJleHAiOjE2NDg0NTM0NjAsImlhdCI6MTY0Nzg0ODY2MH0.PIVO37RZCdn31_w_-VD-EBfdfcAhaSDtR3kXeSlw5KY" }</returns>
+        </member>
+        <member name="M:RoundpayFinTech.Controllers.PlanServicesController.Roffer(System.String,System.String)">
+            <summary>
+            R-Offer Service 
+            Required Fields --> accountNo[Mobile No] and spkey[OPID of Operators]
+            Note: JWT Bearer Token is mandatory user need to send it under HTTP Header under Authorization.
+            </summary>
+            <param name="accountNo"></param>
+            <param name="spkey"></param>
+            <returns>
+            
+            </returns>
+        </member>
+        <member name="M:RoundpayFinTech.Controllers.PlanServicesController.RechargePlan(System.String,System.Int32)">
+            <summary>
+            Recharge Plans of Mobile Operator
+            Required Fields --> spkey[OPID of Operators] and circleId[circle code]
+            Note: JWT Bearer Token is mandatory user need to send it under HTTP Header under Authorization.
+            </summary>
+            <param name="spkey"></param>
+            <param name="circleId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RoundpayFinTech.Controllers.PlanServicesController.DTHPlan(System.String)">
+            <summary>
+            DTH Plans of DTH Operator
+            Required Fields --> spkey[OPID of Operators]
+            Note: JWT Bearer Token is mandatory user need to send it under HTTP Header under Authorization.
+            </summary>
+            <param name="spkey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RoundpayFinTech.Controllers.PlanServicesController.DTHCustomerInfo(System.String,System.String)">
+            <summary>
+            Customer Information of DTH Operator
+            Required Fields --> accountNo[Mobile No] and spkey[OPID of Operators]
+            Note: JWT Bearer Token is mandatory user need to send it under HTTP Header under Authorization.
+            </summary>
+            <param name="accountNo"></param>
+            <param name="spkey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RoundpayFinTech.Controllers.PlanServicesController.DTHHeavyRefresh(System.String,System.String)">
+            <summary>
+            Heavy Refresh Service of DTH Operator
+            Required Fields --> accountNo[Mobile No] and spkey[OPID of Operators]
+            Note: JWT Bearer Token is mandatory user need to send it under HTTP Header under Authorization. 
+            </summary>
+            <param name="accountNo"></param>
+            <param name="spkey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RoundpayFinTech.Controllers.PlanServicesController.MobileLookup(System.String,System.String)">
+            <summary>
+            HLR Service of Prepaid Operator
+            Required Fields --> accountNo[Mobile No] and spkey[OPID of Operators]
+            Note: JWT Bearer Token is mandatory user need to send it under HTTP Header under Authorization. 
+            </summary>
+            <param name="accountNo"></param>
+            <param name="spkey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RoundpayFinTech.Controllers.PlanServicesController.GetCircleCodes">
+            <summary>
+            Get Circle Codes 
+            Note: JWT Bearer Token is mandatory user need to send it under HTTP Header under Authorization.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RoundpayFinTech.Controllers.PlanServicesController.GetOperatorCodes">
+            <summary>
+            Get Operator Codes 
+            Note: JWT Bearer Token is mandatory user need to send it under HTTP Header under Authorization.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RoundpayFinTech.Controllers.SellerController.DTHHeavyRefresh(System.Int32,System.String)">
+            <summary>
+            Mplan DTH Heavy Refresh
+            </summary>
+            <param name="o"></param>
+            <param name="a"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fintech.AppCode.Configuration.HttpRequestExtensions.GetRawBodyStringAsync(Microsoft.AspNetCore.Http.HttpRequest,System.Text.Encoding)">
+            <summary>
+            Retrieve the raw body as a string from the Request.Body stream
+            </summary>
+            <param name="request">Request instance to apply to</param>
+            <param name="encoding">Optional - Encoding, defaults to UTF8</param>
+            <returns></returns>
+        </member>
+        <member name="M:Fintech.AppCode.Configuration.HttpRequestExtensions.GetRawBodyBytesAsync(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Retrieves the raw body as a byte array from the Request.Body stream
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Razorpay.Api.Customer.Tokens">
+                     * Fetch multiple tokens associated with the customerId
+                    *
+        </member>
+        <member name="M:Razorpay.Api.Transfer.Reversal(System.Collections.Generic.Dictionary{System.String,System.Object})">
+                     * Create a reversal 
+                    *
+        </member>
+    </members>
+</doc>
