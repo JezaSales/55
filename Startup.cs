@@ -46,7 +46,8 @@ namespace RoundpayFintech
                 builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             });
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            services.AddSession(options => {
+            services.AddSession(options =>
+            {
                 options.Cookie.Name = ".roundpay.fintech";
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.Cookie.HttpOnly = true;
@@ -71,7 +72,8 @@ namespace RoundpayFintech
             /*Swagger*/
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => {
+            app.UseSwaggerUI(c =>
+            {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 c.InjectStylesheet("/swagger-custom-style.css");
                 c.InjectJavascript("/js/swagger-custom-script.js", "text/javascript");

@@ -85,7 +85,7 @@ var Login = function () {
 
     var LoginDetail = {
         LoginMobile: UserID,
-        LoginTypeID: LoginTypeID,
+        LoginTypeID: parseInt(LoginTypeID),
         Password: Password,
         OTP: o.val() != undefined ? o.val() : '',
         GooglePin: $('#txtGooglePin').val(),
@@ -95,6 +95,8 @@ var Login = function () {
     var URL = LoginDetail.OTP === '' ? 'Login' : 'Login/OTP';
     if (LoginDetail.GooglePin !== undefined && LoginDetail.GooglePin !== '')
         URL = '/login/VerifyGoogleAuthenticatorSetup';
+
+    LoginDetail.GooglePin = LoginDetail.GooglePin ?? "";
     an.id = "Loginalert";
     an.autoClose = 5;
     var isBocked = Q.cookie.get('isBrowserBlock');
@@ -102,9 +104,10 @@ var Login = function () {
         Alerts('Account is blocked.Please contact to support team.', AlertStatus.RED);
         return;
     }
+    console.log(LoginDetail);
     preloader.load();
     $.ajax({
-        type: 'POST',
+        method: 'POST',
         url: URL,
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
